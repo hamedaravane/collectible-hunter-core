@@ -1,7 +1,7 @@
-import {Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn} from "typeorm";
+import {BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn} from "typeorm";
 
-@Entity()
-export default class TokenEntity {
+@Entity("Hello")
+export class TokenEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
@@ -15,22 +15,22 @@ export default class TokenEntity {
     creator_profile_address: string;
 
     @Column({ nullable: true })
-    creator_alias?: string;
+    creator_alias: string;
 
     @Column({ nullable: true })
-    creator_twitter?: string;
+    creator_twitter: string;
 
     @Column({ nullable: true })
-    creator_email?: string;
+    creator_email: string;
 
     @Column({ nullable: true })
-    creator_facebook?: string;
+    creator_facebook: string;
 
     @Column({ nullable: true })
-    creator_instagram?: string;
+    creator_instagram: string;
 
     @Column({ nullable: true })
-    creator_tzdomain?: string;
+    creator_tzdomain: string;
 
     @Column()
     token_address: string;
@@ -74,12 +74,12 @@ export default class TokenEntity {
     @UpdateDateColumn()
     updated_at: Date;
 
-    @Column({ nullable: true })
-    secondary_price?: number;
+    @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
+    secondary_price: number;
+
+    @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
+    price_variation: number;
 
     @Column({ nullable: true })
-    price_variation?: number;
-
-    @Column({ nullable: true })
-    first_secondary_sold_date?: Date;
+    first_secondary_sold_date: Date;
 }
