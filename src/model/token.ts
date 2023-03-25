@@ -17,18 +17,22 @@ export enum EventType {
     TRANSFER = 'transfer',
 }
 
+export interface TokenPk {
+    token_pk: number;
+}
+
 export interface Creator {
     address: string;
     profile_address: string;
-    alias: string | null;
-    email: string | null;
-    facebook: string | null;
-    instagram: string | null;
-    twitter: string | null;
-    tzdomain: string | null;
+    alias?: string;
+    email?: string;
+    facebook?: string;
+    instagram?: string;
+    twitter?: string;
+    tzdomain?: string;
 }
 
-export interface Event {
+export interface TokenEvent {
     amount: number;
     creator: Creator;
     event_type: EventType;
@@ -69,16 +73,16 @@ export interface Royalty {
 export interface TokenDetails {
     address: string;
     profile_address: string;
-    alias: string | null;
-    twitter: string | null;
-    email: string | null;
-    facebook: string | null;
-    instagram: string | null;
-    tzdomain: string | null;
+    alias: string;
+    twitter: string;
+    email: string;
+    facebook: string;
+    instagram: string;
+    tzdomain: string;
     token_address: string;
     marketplace: string;
     image: string;
-    price: number;
+    primary_price: number;
     secondary_price: number;
     royalty: number;
     editions: number;
@@ -87,6 +91,8 @@ export interface TokenDetails {
     list_date: Date;
     token_pk: number;
     sold_rate: number;
-    average_collect_actions: number;
-    overall: number;
+    average_collects: number;
+    overall_score: number;
+    price_variation: number;
+    first_secondary_sold_date: Date;
 }
