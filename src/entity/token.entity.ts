@@ -78,7 +78,7 @@ export class TokenEntity {
     secondary_price: number;
 
     @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
-    price_variation: number;
+    price_variation: number | null;
 
     @Column({ nullable: true })
     first_secondary_sold_date: Date;

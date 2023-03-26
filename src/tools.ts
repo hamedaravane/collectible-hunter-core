@@ -36,10 +36,13 @@ export default class Tools {
         return tokenDetails;
     }
 
-    calculatePriceChange(initialPrice: number, currentPrice: number): number {
-        const percentageChange = ((currentPrice - initialPrice) / initialPrice) * 100;
-        const formattedPercentageChange = percentageChange.toFixed(2);
-        return Number(formattedPercentageChange)
+    calculatePriceChange(initialPrice: number | undefined, currentPrice: number | undefined): number | null {
+        if (initialPrice && currentPrice) {
+            const percentageChange = ((currentPrice - initialPrice) / initialPrice) * 100;
+            const formattedPercentageChange = percentageChange.toFixed(2);
+            return Number(formattedPercentageChange)
+        }
+        return null;
     }
 
     /**

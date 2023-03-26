@@ -37,13 +37,16 @@ async function updatePriceTokens(): Promise<void> {
 async function updatePriceVariation() {
     const tokens = await databaseManager.getTokens();
 
-    const primaryPrices = tokens.map((token) => token.primary_price);
-    const secondaryPrices = tokens.map((token) => token.secondary_price);
+    const tokenIds = tokens.map((token) => token.id);
 
-    for (const [index, token] of tokens.entries()) {
-
+    for (const tokenId of tokenIds) {
+        const token = await databaseManager.getTokenById(tokenId);
+        const priceVariation = tools.calculatePriceChange(token?.primary_price, token?.secondary_price);
+        await databaseManager.postPriceVariations(tokenId, priceVariation)
     }
+
+    await databaseManager.closeConnection()
 }
 
 // test();
-updatePriceTokens().then(r => r)
+updatePriceVariation().then(r => r)

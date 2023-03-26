@@ -52,7 +52,6 @@ export default class DatabaseManager {
             await AppDataSource.initialize();
         }
 
-        console.log(AppDataSource.isInitialized)
         const tokenRepository = AppDataSource.getRepository(TokenEntity);
         return await tokenRepository.find();
     }
@@ -77,11 +76,12 @@ export default class DatabaseManager {
         }
     }
 
-    async postPriceVariations(tokenPk: number, priceVariation: number) {
+    async postPriceVariations(tokenId: string, priceVariation: number | null) {
         if (!AppDataSource.isInitialized) {
             await AppDataSource.initialize();
         }
 
         const tokenRepository = AppDataSource.getRepository(TokenEntity);
+        await tokenRepository.update(tokenId, { price_variation: priceVariation })
     }
 }
