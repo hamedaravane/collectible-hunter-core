@@ -36,6 +36,12 @@ export default class Tools {
         return tokenDetails;
     }
 
+    /**
+     * Calculates the percentage change between an initial price and a current price.
+     * @param {number|undefined} initialPrice - The initial price.
+     * @param {number|undefined} currentPrice - The current price.
+     * @returns {number|null} - The percentage change between the initial price and current price, rounded to 2 decimal places. Returns null if either the initial price or current price is undefined.
+     */
     calculatePriceChange(initialPrice: number | undefined, currentPrice: number | undefined): number | null {
         if (initialPrice && currentPrice) {
             const percentageChange = ((currentPrice - initialPrice) / initialPrice) * 100;

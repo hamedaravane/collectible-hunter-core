@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --coverage",
+    "test:watch": "jest --watch",
     "start": "npx ts-node ./src/index.ts",
     "start:dev": "npx nodemon"
   },
@@ -13,8 +14,8 @@
   "license": "ISC",
   "devDependencies": {
     "@types/jest": "^29.5.0",
-    "jest": "^29.5.0",
     "@types/node": "^18.15.7",
+    "jest": "^29.5.0",
     "nodemon": "^2.0.22",
     "ts-jest": "^29.0.5",
     "ts-node": "^10.9.1",
