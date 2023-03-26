@@ -48,5 +48,5 @@ async function updatePriceVariation() {
     await databaseManager.closeConnection()
 }
 
-// test();
-updatePriceVariation().then(r => r)
+test();
+// updatePriceVariation().then(r => r)
