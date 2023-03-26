@@ -21,7 +21,7 @@ export default class Tools {
             token_pk: this.getTokenPk(events),
             image: this.getTokenImage(events),
             marketplace: this.getMarketplaceName(events),
-            primary_price: this.getPrice(events),
+            primary_price: this.getPrimaryPrice(events),
             royalty: this.calculateRoyalty(events),
             editions: this.amountOfListEdition(events),
             sold_editions: this.amountOfPurchases(events),
@@ -34,6 +34,12 @@ export default class Tools {
         tokenDetails['overall_score'] = this.ratingSystem.calculateOverallScore(tokenDetails);
 
         return tokenDetails;
+    }
+
+    calculatePriceChange(initialPrice: number, currentPrice: number): number {
+        const percentageChange = ((currentPrice - initialPrice) / initialPrice) * 100;
+        const formattedPercentageChange = percentageChange.toFixed(2);
+        return Number(formattedPercentageChange)
     }
 
     /**
@@ -99,16 +105,34 @@ export default class Tools {
     }
 
     /**
-     * This function returns the price of list token.
+     * This function returns the latest price of list token.
      * @param {TokenEvent[]} events - An array of token events.
-     * @returns {number} The Price.
+     * @returns {number} The latest price.
      */
-    getPrice(events: TokenEvent[]): number | undefined {
+    getLatestPrice(events: TokenEvent[]) {
+        let price = 0;
         for (const event of events) {
             if (event.marketplace_event_type === MarketplaceEventType.LIST_BUY) {
-                return event.price / 1000000;
+                price = event.price / 1000000;
             }
         }
+        return price;
+    }
+
+    /**
+     * This function returns the price of list token.
+     * @param {TokenEvent[]} events - An array of token events.
+     * @returns {number} The primary price.
+     */
+    getPrimaryPrice(events: TokenEvent[]): number | undefined {
+        const artistAddress = this.findArtist(events).address;
+        let price = 0;
+        for (const event of events) {
+            if (event.marketplace_event_type === MarketplaceEventType.LIST_BUY && artistAddress === event.creator.address) {
+                price = event.price / 1000000;
+            }
+        }
+        return price;
     }
 
     /**

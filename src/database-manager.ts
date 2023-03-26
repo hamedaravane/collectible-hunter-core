@@ -1,10 +1,14 @@
-import { TokenDetails } from "./model/token";
-import { TokenEntity } from "./entity/token.entity";
-import AppDataSource from "./data-source"
+import {TokenDetails} from "./model/token";
+import {TokenEntity} from "./entity/token.entity";
+import { AppDataSource } from "./data-source"
 
 export default class DatabaseManager {
 
     async saveToken(tokenDetails: TokenDetails): Promise<void> {
+        if (!AppDataSource.isInitialized) {
+            await AppDataSource.initialize();
+        }
+
         const token = new TokenEntity();
         token.creator_address = tokenDetails.address;
         token.creator_profile_address = tokenDetails.profile_address;
@@ -35,7 +39,7 @@ export default class DatabaseManager {
             where: { token_pk: token.token_pk }
         })
         if (existingToken === null) {
-            await AppDataSource.manager.save(token);
+            await AppDataSource.getRepository(TokenEntity).save(token);
         }
     }
 
@@ -44,11 +48,40 @@ export default class DatabaseManager {
     }
 
     async getTokens() {
-        const token = await AppDataSource.getRepository(
-            TokenEntity
-        ).find();
-        // const token = await tokenRepo.find()
-        console.log(token);
-        // return token;
+        if (!AppDataSource.isInitialized) {
+            await AppDataSource.initialize();
+        }
+
+        console.log(AppDataSource.isInitialized)
+        const tokenRepository = AppDataSource.getRepository(TokenEntity);
+        return await tokenRepository.find();
+    }
+
+    async getTokenById(tokenId: string) {
+        if (!AppDataSource.isInitialized) {
+            await AppDataSource.initialize();
+        }
+
+        const tokenRepository = AppDataSource.getRepository(TokenEntity);
+        return await tokenRepository.findOneBy({ id: tokenId})
+    }
+
+    async updateLatestPrice(tokenId: string, currentPrice: number | undefined) {
+        if (!AppDataSource.isInitialized) {
+            await AppDataSource.initialize();
+        }
+
+        const tokenRepository = AppDataSource.getRepository(TokenEntity);
+        if (currentPrice) {
+            await tokenRepository.update(tokenId, { secondary_price: currentPrice })
+        }
+    }
+
+    async postPriceVariations(tokenPk: number, priceVariation: number) {
+        if (!AppDataSource.isInitialized) {
+            await AppDataSource.initialize();
+        }
+
+        const tokenRepository = AppDataSource.getRepository(TokenEntity);
     }
 }

@@ -2,7 +2,7 @@ import "reflect-metadata"
 import { DataSource } from "typeorm"
 import {TokenEntity} from "./entity/token.entity";
 
-const AppDataSource = new DataSource({
+export const AppDataSource = new DataSource({
     type: "mysql",
     host: "localhost",
     port: 3306,
@@ -11,14 +11,5 @@ const AppDataSource = new DataSource({
     database: "test",
     entities: [TokenEntity],
     synchronize: true,
-    logging: true,
+    logging: false,
 });
-
-AppDataSource.initialize().then(() => {
-    console.log("Data Source has been initialized!")
-    // const token = await tokenRepo.find()
-}).catch((err) => {
-    console.log(err.message);
-});
-
-export default AppDataSource;

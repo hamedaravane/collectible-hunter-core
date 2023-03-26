@@ -1,6 +1,6 @@
 import {BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn} from "typeorm";
 
-@Entity("Hello")
+@Entity()
 export class TokenEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string;

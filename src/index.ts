@@ -19,18 +19,31 @@ async function test() {
     await databaseManager.closeConnection();
 }
 
-async function updateTokens(): Promise<void> {
-    await databaseManager.getTokens();
-    // console.log(tokens)
-    // await databaseManager.closeConnection();
-    // const tokenPks = tokens.map((token) => token.token_pk);
-    // const tokenPrices = tokens.map((token) => token.primary_price);
-    //
-    // for (const [index, tokenPk] of tokenPks.entries()) {
-    //     console.log('salam', index, tokenPk)
-    // }
+async function updatePriceTokens(): Promise<void> {
+    const tokens = await databaseManager.getTokens();
+
+    const tokenIds = tokens.map((token) => token.id);
+
+    for (const [index, tokenId] of tokenIds.entries()) {
+        const tokenPk = tokens[index].token_pk;
+        const tokenEvents = await objktApi.getTokenEvents(tokenPk);
+        const currentPrice = tools.getLatestPrice(tokenEvents);
+        console.log(tokenId, currentPrice);
+        await databaseManager.updateLatestPrice(tokenId, currentPrice);
+    }
     await databaseManager.closeConnection();
 }
 
+async function updatePriceVariation() {
+    const tokens = await databaseManager.getTokens();
+
+    const primaryPrices = tokens.map((token) => token.primary_price);
+    const secondaryPrices = tokens.map((token) => token.secondary_price);
+
+    for (const [index, token] of tokens.entries()) {
+
+    }
+}
+
 // test();
-updateTokens().then(r => r)
+updatePriceTokens().then(r => r)
