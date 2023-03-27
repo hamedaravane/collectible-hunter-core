@@ -1,5 +1,6 @@
 import {Creator, EventType, MarketplaceEventType, TokenDetails, TokenEvent} from "./model/token";
 import RatingSystem from "./rating-system";
+import {timestampModifier} from "./utility/helper";
 
 export default class Tools {
     private readonly minimumListToken = 1;
@@ -122,7 +123,9 @@ export default class Tools {
         let price = 0;
         for (const event of events) {
             if (event.marketplace_event_type === MarketplaceEventType.LIST_BUY) {
-                price = event.price / 1000000;
+                if (event.price) {
+                    price = event.price / 1000000;
+                }
             }
         }
         return price;
@@ -138,7 +141,9 @@ export default class Tools {
         let price = 0;
         for (const event of events) {
             if (event.marketplace_event_type === MarketplaceEventType.LIST_BUY && artistAddress === event.creator.address) {
-                price = event.price / 1000000;
+                if (event.price) {
+                    price = event.price / 1000000;
+                }
             }
         }
         return price;
@@ -169,9 +174,7 @@ export default class Tools {
         const purchaseTimestamps = [];
         for (const event of events) {
             if (event.marketplace_event_type === MarketplaceEventType.LIST_BUY) {
-                const date = Math.floor(
-                    new Date(event.timestamp).getTime() / 1000 / 60,
-                );
+                const date = timestampModifier(event.timestamp);
                 purchaseTimestamps.push(date);
             }
         }

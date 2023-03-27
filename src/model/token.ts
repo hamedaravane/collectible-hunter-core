@@ -23,13 +23,13 @@ export interface TokenPk {
 
 export interface Creator {
     address: string;
-    profile_address: string;
-    alias?: string;
-    email?: string;
-    facebook?: string;
-    instagram?: string;
-    twitter?: string;
-    tzdomain?: string;
+    profile_address?: string;
+    alias?: string | null;
+    email?: string | null;
+    facebook?: string | null;
+    instagram?: string | null;
+    twitter?: string | null;
+    tzdomain?: string | null;
 }
 
 export interface TokenEvent {
@@ -37,12 +37,12 @@ export interface TokenEvent {
     creator: Creator;
     event_type: EventType;
     fa_contract: string;
-    marketplace: Marketplace;
-    marketplace_contract: string;
+    marketplace?: Marketplace | null;
+    marketplace_contract: string | null;
     marketplace_event_type: MarketplaceEventType;
-    price: number;
-    recipient_address: string;
-    timestamp: Date;
+    price: number | null;
+    recipient_address: string | null;
+    timestamp: string;
     token: Token;
 }
 
@@ -59,9 +59,9 @@ export interface Token {
     pk: number;
     average: number;
     lowest_ask: number;
-    highest_offer: number;
+    highest_offer: number | null;
     supply: number;
-    token_id: number;
+    token_id: string;
     royalties: Royalty[];
 }
 
