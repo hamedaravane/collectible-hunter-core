@@ -4,6 +4,42 @@ import { AppDataSource } from "./data-source"
 
 export default class DatabaseManager {
 
+    /**
+     * Returns all the tokens.
+     */
+    async getTokens() {
+        if (!AppDataSource.isInitialized) {
+            await AppDataSource.initialize();
+        }
+
+        const tokenRepository = AppDataSource.getRepository(TokenEntity);
+        return await tokenRepository.find();
+    }
+
+    /**
+     * Returns a specific token, which has the token id.
+     * @param tokenId
+     */
+    async getTokenById(tokenId: string) {
+        if (!AppDataSource.isInitialized) {
+            await AppDataSource.initialize();
+        }
+
+        const tokenRepository = AppDataSource.getRepository(TokenEntity);
+        return await tokenRepository.findOneBy({ id: tokenId})
+    }
+
+    /**
+     * It will close the connection.
+     */
+    async closeConnection(): Promise<void> {
+        await AppDataSource.destroy();
+    }
+
+    /**
+     * Save a new token in database.
+     * @param tokenDetails
+     */
     async saveToken(tokenDetails: TokenDetails): Promise<void> {
         if (!AppDataSource.isInitialized) {
             await AppDataSource.initialize();
@@ -43,29 +79,7 @@ export default class DatabaseManager {
         }
     }
 
-    async closeConnection(): Promise<void> {
-        await AppDataSource.destroy();
-    }
-
-    async getTokens() {
-        if (!AppDataSource.isInitialized) {
-            await AppDataSource.initialize();
-        }
-
-        const tokenRepository = AppDataSource.getRepository(TokenEntity);
-        return await tokenRepository.find();
-    }
-
-    async getTokenById(tokenId: string) {
-        if (!AppDataSource.isInitialized) {
-            await AppDataSource.initialize();
-        }
-
-        const tokenRepository = AppDataSource.getRepository(TokenEntity);
-        return await tokenRepository.findOneBy({ id: tokenId})
-    }
-
-    async updateLatestPrice(tokenId: string, currentPrice: number | undefined) {
+    async updateLatestPrice(tokenId: string, currentPrice: number | null) {
         if (!AppDataSource.isInitialized) {
             await AppDataSource.initialize();
         }
@@ -73,6 +87,17 @@ export default class DatabaseManager {
         const tokenRepository = AppDataSource.getRepository(TokenEntity);
         if (currentPrice) {
             await tokenRepository.update(tokenId, { secondary_price: currentPrice })
+        }
+    }
+
+    async updateLatestSaleTimestamp(tokenId: string, timestamp: Date | null) {
+        if (!AppDataSource.isInitialized) {
+            await AppDataSource.initialize();
+        }
+
+        const tokenRepository = AppDataSource.getRepository(TokenEntity);
+        if (timestamp) {
+            await tokenRepository.update(tokenId, { first_secondary_sold_date: timestamp })
         }
     }
 

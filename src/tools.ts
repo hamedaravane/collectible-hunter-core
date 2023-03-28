@@ -119,16 +119,26 @@ export default class Tools {
      * @param {TokenEvent[]} events - An array of token events.
      * @returns {number} The latest price.
      */
-    getLatestPrice(events: TokenEvent[]) {
-        let price = 0;
+    getFirstSecondaryPrice(events: TokenEvent[]) {
+        const artistAddress = this.findArtist(events).address;
         for (const event of events) {
-            if (event.marketplace_event_type === MarketplaceEventType.LIST_BUY) {
+            if (event.marketplace_event_type === MarketplaceEventType.LIST_BUY && artistAddress !== event.creator.address) {
                 if (event.price) {
-                    price = event.price / 1000000;
+                    return event.price / 1000000;
                 }
             }
         }
-        return price;
+        return null;
+    }
+
+    getFirstSecondaryPriceTimestamp(events: TokenEvent[]): Date | null {
+        const artistAddress = this.findArtist(events).address;
+        for (const event of events) {
+            if (event.marketplace_event_type === MarketplaceEventType.LIST_BUY && artistAddress !== event.creator.address) {
+                return new Date(event.timestamp);
+            }
+        }
+        return null;
     }
 
     /**
@@ -170,15 +180,15 @@ export default class Tools {
      * @param {TokenEvent[]} events - An array of token events.
      * @returns {number[]} An array of timestamps (in seconds) for every buy action in the events list.
      */
-    getListOfPurchaseTimestamps(events: TokenEvent[]): number[] {
-        const purchaseTimestamps = [];
+    getListOfPurchaseSeconds(events: TokenEvent[]): number[] {
+        const purchaseSeconds = [];
         for (const event of events) {
             if (event.marketplace_event_type === MarketplaceEventType.LIST_BUY) {
-                const date = timestampModifier(event.timestamp);
-                purchaseTimestamps.push(date);
+                const seconds = timestampModifier(event.timestamp);
+                purchaseSeconds.push(seconds);
             }
         }
-        return purchaseTimestamps;
+        return purchaseSeconds;
     }
 
     /**
@@ -305,7 +315,7 @@ export default class Tools {
      * @returns {number} The average time (in seconds) between purchases.
      */
     averagePurchaseActionsTime(events: TokenEvent[]): number {
-        const purchaseTimestamps = this.getListOfPurchaseTimestamps(events);
+        const purchaseTimestamps = this.getListOfPurchaseSeconds(events);
         const differences = purchaseTimestamps
             .slice(1)
             .map((timestamp, i) => timestamp - purchaseTimestamps[i]);

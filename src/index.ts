@@ -1,52 +1,14 @@
-import ObjktApi from "./api";
-import Tools from "./tools";
-import DatabaseManager from "./database-manager";
+import SaveTokens from "./save-tokens";
+import UpdateTokens from "./update-tokens";
 
-const objktApi = new ObjktApi();
-const tools = new Tools();
-const databaseManager = new DatabaseManager();
+const saveTokens: SaveTokens = new SaveTokens();
+const updateTokens: UpdateTokens = new UpdateTokens();
 
-async function test() {
-    const tokens = await objktApi.getTokens();
-    for (const token of tokens) {
-        const tokenEvents = await objktApi.getTokenEvents(token);
-        if (!tools.checkIfIBought(tokenEvents) && tools.checkAvailability(tokenEvents)) {
-            const tokenDetails = tools.getTokenDetails(tokenEvents);
-            console.log(tokenDetails);
-            await databaseManager.saveToken(tokenDetails)
-        }
-    }
-    await databaseManager.closeConnection();
+async function main() {
+    // await saveTokens.save();
+
+    await updateTokens.updatePriceTokens();
+    await updateTokens.updatePriceVariation()
 }
 
-async function updatePriceTokens(): Promise<void> {
-    const tokens = await databaseManager.getTokens();
-
-    const tokenIds = tokens.map((token) => token.id);
-
-    for (const [index, tokenId] of tokenIds.entries()) {
-        const tokenPk = tokens[index].token_pk;
-        const tokenEvents = await objktApi.getTokenEvents(tokenPk);
-        const currentPrice = tools.getLatestPrice(tokenEvents);
-        console.log(tokenId, currentPrice);
-        await databaseManager.updateLatestPrice(tokenId, currentPrice);
-    }
-    await databaseManager.closeConnection();
-}
-
-async function updatePriceVariation() {
-    const tokens = await databaseManager.getTokens();
-
-    const tokenIds = tokens.map((token) => token.id);
-
-    for (const tokenId of tokenIds) {
-        const token = await databaseManager.getTokenById(tokenId);
-        const priceVariation = tools.calculatePriceChange(token?.primary_price, token?.secondary_price);
-        await databaseManager.postPriceVariations(tokenId, priceVariation)
-    }
-
-    await databaseManager.closeConnection()
-}
-
-test();
-// updatePriceVariation().then(r => r)
+main().then(() => console.log('application have been executed'))
