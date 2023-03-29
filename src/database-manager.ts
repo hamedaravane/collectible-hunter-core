@@ -109,4 +109,13 @@ export default class DatabaseManager {
         const tokenRepository = AppDataSource.getRepository(TokenEntity);
         await tokenRepository.update(tokenId, { price_variation: priceVariation })
     }
+
+    async updateOverallScore(tokenId: string, score: number) {
+        if (!AppDataSource.isInitialized) {
+            await AppDataSource.initialize();
+        }
+
+        const tokenRepository = AppDataSource.getRepository(TokenEntity);
+        await tokenRepository.update(tokenId, { overall_score: score })
+    }
 }

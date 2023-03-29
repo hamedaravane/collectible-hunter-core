@@ -105,11 +105,11 @@ export default class RatingSystem {
 
     calculateOverallScore(tokenDetails: TokenDetails): number {
         const weights: Record<string, number> = {
-            price: 1.5,
-            royalty: 1.2,
-            editions: 2,
-            soldRate: 3,
-            collectTime: 7,
+            price: 3,
+            royalty: 3,
+            editions: 3,
+            soldRate: 10,
+            collectTime: 20,
         };
 
         const price = this.priceRating(tokenDetails.primary_price!);
